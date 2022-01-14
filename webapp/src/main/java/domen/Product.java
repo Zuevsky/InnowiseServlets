@@ -34,7 +34,7 @@ public class Product {
     public int hashCode() {
         int result = 11;
         for (char symbol : name.toCharArray()) {
-            result += (int) symbol * 14;
+            result += symbol * 14;
         }
         for (char number : Double.toString(price).toCharArray()) {
                 result += number * 17;

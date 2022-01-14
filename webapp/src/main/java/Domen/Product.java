@@ -1,4 +1,4 @@
-package Domen;
+package domen;
 
 public class Product {
     private static int counter = 1;

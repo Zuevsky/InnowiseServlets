@@ -33,7 +33,6 @@
                 <configuration>
                     <stopKey>stop</stopKey>
                     <stopPort>9960</stopPort>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
                     <webApp>
                         <contextPath>/</contextPath>
                     </webApp>

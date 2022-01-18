@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import services.EmptyUsernameWarning;
 import services.ParamsProvider;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,19 +28,12 @@ public class AccessDenyServlet extends HttpServlet {
         if (EmptyUsernameWarning.validateEmptyUsername(username)) {
             EmptyUsernameWarning.writeEmptyUsernameWarning(resp);
         } else {
-            try (PrintWriter writer = resp.getWriter()) {
-                String message = """
-                        <div align="center">
-                        <h1>Oops!</h1>
-                        <p>You shouldn't be here</p>
-                        <p>Please, agree with the terms of service first.</p>
-                        <br/>
-                        <a href="/">Start page</a>
-                        </div>
-                        """;
-                writer.println(message);
+            try {
+                getServletContext().getRequestDispatcher("/WEB-INF/access-deny.jsp").forward(req, resp);
             } catch (IOException ex) {
-                log.error("Writer problem in AccessDeny.", ex);
+                log.error("IOException (GET) in AccessDeny.", ex);
+            } catch (ServletException ex) {
+                log.error("ServletException (GET) in AccessDeny.", ex);
             }
         }
     }

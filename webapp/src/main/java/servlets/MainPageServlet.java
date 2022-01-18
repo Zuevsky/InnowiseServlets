@@ -6,6 +6,7 @@ import repository.ProductList;
 import services.EmptyUsernameWarning;
 import services.ParamsProvider;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,20 +25,12 @@ public class MainPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("text/html");
 
-        try (PrintWriter printWriter = resp.getWriter()) {
-
-            String userForm = """
-                    <h1 align="center">Welcome to Online Shop</h1> <br/>
-                    <form name="loginForm" method="post" action="/" align="center">
-                    <input type="text" name="username" align="center"/> <br/>
-                    <input type="checkbox" name="termsAgreement" checked align="center"> I agree with the terms of service <br/>
-                    <input type="submit" name="btn" align="center"/>
-                    </form>
-                    """;
-
-            printWriter.write(userForm);
+        try {
+            getServletContext().getRequestDispatcher("/WEB-INF/welcome.jsp").forward(req, resp);
         } catch (IOException ex) {
-            log.error("Writer problem in ShopMainPage.", ex);
+            log.error("IOException (GET) in ShopMainPage.", ex);
+        } catch (ServletException ex) {
+            log.error("ServletException (GET) in ShopMainPage.", ex);
         }
     }
 

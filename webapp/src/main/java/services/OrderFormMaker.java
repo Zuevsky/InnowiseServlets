@@ -20,7 +20,7 @@ public class OrderFormMaker {
         if (!products.getSelectedProducts().isEmpty()) {
             alreadyChosenProducts = getAlreadyChosenProducts(products.getSelectedProducts());
             submitButton = """
-                    <form name="submitForm" method="post" action="/order" id="redirectToOrder" align="center">
+                    <form name="submitForm" method="post" action="/total-order" id="redirectToOrder" align="center">
                     <input type="submit" name="submit" form="redirectToOrder" align="center">
                     </form>
                     """;

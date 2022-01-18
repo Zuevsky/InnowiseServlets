@@ -6,6 +6,7 @@ import services.EmptyUsernameWarning;
 import services.ParamsProvider;
 import services.TotalFormMaker;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +16,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
-@WebServlet(urlPatterns = "/order", name = "Order")
-public class OrderServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/total-order", name = "TotalOrder")
+public class TotalOrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
@@ -32,7 +33,7 @@ public class OrderServlet extends HttpServlet {
             try {
                 resp.sendRedirect(req.getContextPath() + "/assortment");
             } catch (IOException ex) {
-                log.error("Redirect problem in Order (to /assortment).", ex);
+                log.error("Redirect problem in TotalOrder (to /assortment).", ex);
             }
         }
     }
@@ -43,16 +44,23 @@ public class OrderServlet extends HttpServlet {
 
         HttpSession session = req.getSession(true);
 
-        String username = (String) session.getAttribute(ParamsProvider.getUsernameParam());
+        //String username = (String) session.getAttribute(ParamsProvider.getUsernameParam());
 
-        ProductList products = (ProductList) session.getAttribute(ParamsProvider.getProductsParam());
+        //ProductList products = (ProductList) session.getAttribute(ParamsProvider.getProductsParam());
 
-        try (PrintWriter writer = resp.getWriter()) {
+        /*try (PrintWriter writer = resp.getWriter()) {
             writer.write(TotalFormMaker.getTotal(username, products.getSelectedProducts()));
             products.clearSelectedProducts();
         } catch (IOException ex) {
-            log.error("Writer problem in Order.", ex);
-        }
+            log.error("Writer problem in TotalOrder.", ex);
+        }*/
 
+        try {
+            getServletContext().getRequestDispatcher("/WEB-INF/total.jsp").forward(req, resp);
+        } catch (IOException ex) {
+            log.error("IOException (POST) in TotalOrder.", ex);
+        } catch (ServletException ex) {
+            log.error("ServletException (POST) in TotalOrder.", ex);
+        }
     }
 }

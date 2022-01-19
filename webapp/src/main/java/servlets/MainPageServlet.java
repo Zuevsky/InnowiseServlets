@@ -18,7 +18,7 @@ import java.util.Optional;
 
 
 @Slf4j
-@WebServlet(urlPatterns = "/", name = "ShopMainPage")
+@WebServlet(urlPatterns = "/", name = "ShopMainPageServlet")
 public class MainPageServlet extends HttpServlet {
 
     @Override
@@ -42,7 +42,7 @@ public class MainPageServlet extends HttpServlet {
         String username = req.getParameter(ParamsProvider.getUsernameParam());
 
         if (EmptyUsernameWarning.validateEmptyUsername(username)) {
-            EmptyUsernameWarning.writeEmptyUsernameWarning(resp);
+            EmptyUsernameWarning.writeEmptyUsernameWarning(this, req, resp);
         } else {
             boolean agreement = Optional.ofNullable(req.getParameter(ParamsProvider.getAgreementParam())).isPresent();
 

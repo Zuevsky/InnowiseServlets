@@ -1,6 +1,6 @@
 package services;
 
-import domen.Product;
+import domain.Product;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import repository.ProductList;
@@ -11,41 +11,38 @@ import java.util.List;
 @UtilityClass
 public class OrderFormMaker {
 
-    public static String getOrderForm(String username, ProductList products) {
-        Formatter formatter = new Formatter();
+    public String getShoppingCart(boolean isShoppingCartFilled, List<Product> products) {
+        String shoppingCart;
 
-        String alreadyChosenProducts;
-        String submitButton = StringUtils.EMPTY;
-
-        if (!products.getSelectedProducts().isEmpty()) {
-            alreadyChosenProducts = getAlreadyChosenProducts(products.getSelectedProducts());
-            submitButton = """
-                    <form name="submitForm" method="post" action="/total-order" id="redirectToOrder" align="center">
-                    <input type="submit" name="submit" form="redirectToOrder" align="center">
-                    </form>
-                    """;
+        if (isShoppingCartFilled) {
+            shoppingCart = getAlreadyChosenProducts(products);
         } else {
-            alreadyChosenProducts = """
+            shoppingCart = """
                     <p>Your shopping cart is empty!</p>
                     <p>Please, add some items!</p>
                     """;
         }
 
-        return String.valueOf(formatter.format("""
-                <div align="center">
-                <h1 align="center">Hello %s!</h1>
-                %s
-                <p align="center">Make your order</p>
-                <form name="selector" method="post" action="/assortment" id="selectForm" align="center">
-                %s <br/>
-                <input type="submit" name="addItem" value="Add Item" form="selectForm" align="center">
-                </form>
-                %s
-                </div>
-                """, username, alreadyChosenProducts, getSelectForProduct(products.getAllProducts()), submitButton));
+        return shoppingCart;
     }
 
-    private String getSelectForProduct(List<Product> products) {
+    public String getSubmitButton(boolean isShoppingCartFilled) {
+        if (isShoppingCartFilled) {
+            return """
+                    <form name="submitForm" method="post" action="/total-order" id="redirectToOrder" align="center">
+                    <input type="submit" name="submit" form="redirectToOrder" align="center">
+                    </form>
+                    """;
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    public boolean shoppingCartCheckout(List<Product> products) {
+        return !products.isEmpty();
+    }
+
+    public String getSelectForProduct(List<Product> products) {
         StringBuilder select = new StringBuilder();
 
         select.append("<select name=\"productName\" form=\"selectForm\" align=\"center\"><br>");
@@ -60,7 +57,7 @@ public class OrderFormMaker {
         return select.toString();
     }
 
-    private String getAlreadyChosenProducts(List<Product> products) {
+    public String getAlreadyChosenProducts(List<Product> products) {
         StringBuilder listOfChosenProducts = new StringBuilder();
         listOfChosenProducts.append("<p id=\"shoppingCart\">You have already chosen:</p>");
         for (int i = 1; i <= products.size(); i++) {

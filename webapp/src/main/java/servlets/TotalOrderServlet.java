@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
-@WebServlet(urlPatterns = "/total-order", name = "TotalOrder")
+@WebServlet(urlPatterns = "/total-order", name = "TotalOrderServlet")
 public class TotalOrderServlet extends HttpServlet {
 
     @Override
@@ -28,7 +28,7 @@ public class TotalOrderServlet extends HttpServlet {
         String username = (String) session.getAttribute(ParamsProvider.getUsernameParam());
 
         if (EmptyUsernameWarning.validateEmptyUsername(username)) {
-            EmptyUsernameWarning.writeEmptyUsernameWarning(resp);
+            EmptyUsernameWarning.writeEmptyUsernameWarning(this, req, resp);
         } else {
             try {
                 resp.sendRedirect(req.getContextPath() + "/assortment");
@@ -44,16 +44,13 @@ public class TotalOrderServlet extends HttpServlet {
 
         HttpSession session = req.getSession(true);
 
-        //String username = (String) session.getAttribute(ParamsProvider.getUsernameParam());
+        ProductList products = (ProductList) session.getAttribute(ParamsProvider.getProductsParam());
 
-        //ProductList products = (ProductList) session.getAttribute(ParamsProvider.getProductsParam());
+        String chosenProducts = TotalFormMaker.getChosenProducts(products.getSelectedProducts());
+        String totalPrice = TotalFormMaker.getTotalPrice(products.getSelectedProducts());
 
-        /*try (PrintWriter writer = resp.getWriter()) {
-            writer.write(TotalFormMaker.getTotal(username, products.getSelectedProducts()));
-            products.clearSelectedProducts();
-        } catch (IOException ex) {
-            log.error("Writer problem in TotalOrder.", ex);
-        }*/
+        session.setAttribute(ParamsProvider.getChosenProducts(), chosenProducts);
+        session.setAttribute(ParamsProvider.getTotalPrice(), totalPrice);
 
         try {
             getServletContext().getRequestDispatcher("/WEB-INF/total.jsp").forward(req, resp);
@@ -62,5 +59,7 @@ public class TotalOrderServlet extends HttpServlet {
         } catch (ServletException ex) {
             log.error("ServletException (POST) in TotalOrder.", ex);
         }
+
+        products.clearSelectedProducts();
     }
 }

@@ -1,6 +1,6 @@
 package repository;
 
-import domen.Product;
+import domain.Product;
 
 import java.io.Serializable;
 import java.util.ArrayList;

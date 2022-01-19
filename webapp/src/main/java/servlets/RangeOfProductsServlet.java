@@ -1,11 +1,13 @@
 package servlets;
 
-import domen.Product;
+import domain.Product;
 import lombok.extern.slf4j.Slf4j;
 import repository.ProductList;
 import services.EmptyUsernameWarning;
+import services.OrderFormMaker;
 import services.ParamsProvider;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +17,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import static services.OrderFormMaker.getOrderForm;
-
 @Slf4j
-@WebServlet(urlPatterns = "/assortment", name = "Assortment")
+@WebServlet(urlPatterns = "/assortment", name = "AssortmentServlet")
 public class RangeOfProductsServlet extends HttpServlet {
 
     @Override
@@ -27,16 +27,28 @@ public class RangeOfProductsServlet extends HttpServlet {
 
         HttpSession session = req.getSession(true);
 
+        ProductList products = (ProductList) session.getAttribute(ParamsProvider.getProductsParam());
         String username = (String) session.getAttribute(ParamsProvider.getUsernameParam());
 
+        String shoppingCart = OrderFormMaker.getShoppingCart(OrderFormMaker.shoppingCartCheckout(products.getSelectedProducts()),
+                products.getSelectedProducts());
+        String selectForProduct = OrderFormMaker.getSelectForProduct(products.getAllProducts());
+        String submitButton = OrderFormMaker.getSubmitButton(OrderFormMaker.shoppingCartCheckout(products.getSelectedProducts()));
+
+        session.setAttribute(ParamsProvider.getShoppingCart(), shoppingCart);
+        session.setAttribute(ParamsProvider.getSelectForProduct(), selectForProduct);
+        session.setAttribute(ParamsProvider.getSubmitButton(), submitButton);
+
+
         if (EmptyUsernameWarning.validateEmptyUsername(username)) {
-            EmptyUsernameWarning.writeEmptyUsernameWarning(resp);
+            EmptyUsernameWarning.writeEmptyUsernameWarning(this, req, resp);
         } else {
-            ProductList products = (ProductList) session.getAttribute(ParamsProvider.getProductsParam());
-            try (PrintWriter writer = resp.getWriter()) {
-                writer.write(getOrderForm(username, products));
+            try {
+                getServletContext().getRequestDispatcher("/WEB-INF/assortment.jsp").forward(req, resp);
             } catch (IOException ex) {
-                log.error("Writer problem in Assortment.", ex);
+                log.error("IOException (GET) in Assortment.", ex);
+            } catch (ServletException ex) {
+                log.error("ServletException (GET) in Assortment.", ex);
             }
         }
     }

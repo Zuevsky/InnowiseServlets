@@ -1,5 +1,3 @@
-<%@page import="services.TotalFormMaker, repository.ProductList"%>
-${products}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +7,8 @@ ${products}
 <body>
 <div align="center">
 <h1>Dear ${username}, your order:</h1>
-
+${chosenProducts}
+${totalPrice}
 <p>Do you want to make another order?</p>
 <form name="anotherOrderForm" method="get" action="/assortment" id="anotherOrder" align="center">
 <input type="submit" name="btn" value="Yes" form="anotherOrder" align="center">

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
-@WebServlet(urlPatterns = "/access-deny", name = "AccessDeny")
+@WebServlet(urlPatterns = "/access-deny", name = "AccessDenyServlet")
 public class AccessDenyServlet extends HttpServlet {
 
     @Override
@@ -26,7 +26,7 @@ public class AccessDenyServlet extends HttpServlet {
         String username = (String) session.getAttribute(ParamsProvider.getUsernameParam());
 
         if (EmptyUsernameWarning.validateEmptyUsername(username)) {
-            EmptyUsernameWarning.writeEmptyUsernameWarning(resp);
+            EmptyUsernameWarning.writeEmptyUsernameWarning(this, req, resp);
         } else {
             try {
                 getServletContext().getRequestDispatcher("/WEB-INF/access-deny.jsp").forward(req, resp);

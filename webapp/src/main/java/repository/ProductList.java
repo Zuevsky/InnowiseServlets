@@ -4,16 +4,17 @@ import domen.Product;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductList implements Serializable {
-    private ArrayList<Product> allProducts = new ArrayList<>(setAllProductsList());
-    private ArrayList<Product> selectedProducts = new ArrayList<>();
+    private final ArrayList<Product> allProducts = new ArrayList<>(setAllProductsList());
+    private final ArrayList<Product> selectedProducts = new ArrayList<>();
 
-    public ArrayList<Product> getAllProducts() {
+    public List<Product> getAllProducts() {
         return allProducts;
     }
 
-    public ArrayList<Product> getSelectedProducts() {
+    public List<Product> getSelectedProducts() {
         return selectedProducts;
     }
 
@@ -27,11 +28,26 @@ public class ProductList implements Serializable {
 
     private ArrayList<Product> setAllProductsList() {
         ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Book", 5.5));
-        products.add(new Product("TV", 40.0));
-        products.add(new Product("Mobile phone", 25.0));
-        products.add(new Product("Textbook", 8.5));
-        products.add(new Product("Pencil", 2.0));
+        products.add(Product.builder()
+                .name("book")
+                .price(5.5)
+                .build());
+        products.add(Product.builder()
+                .name("TV")
+                .price(40.0)
+                .build());
+        products.add(Product.builder()
+                .name("Mobile phone")
+                .price(25.0)
+                .build());
+        products.add(Product.builder()
+                .name("Textbook")
+                .price(8.5)
+                .build());
+        products.add(Product.builder()
+                .name("Pencil")
+                .price(2.0)
+                .build());
         return products;
     }
 }

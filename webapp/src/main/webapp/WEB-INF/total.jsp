@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +7,7 @@
 </head>
 <body>
 <div align="center">
-<h1>Dear ${username}, your order:</h1>
+<h1>Dear <c:out value="${username}" />, your order:</h1>
 ${chosenProducts}
 ${totalPrice}
 <p>Do you want to make another order?</p>
